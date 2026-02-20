@@ -2,6 +2,7 @@
 # Modifications: Add additional datasets
 
 from .acdc import ACDCDataset
+from .binary_seg import BinarySegDataset
 from .builder import DATASETS, PIPELINES, build_dataloader, build_dataset
 from .cityscapes import CityscapesDataset
 from .custom import CustomDataset
@@ -25,4 +26,5 @@ __all__ = [
     'UDADataset',
     'ACDCDataset',
     'DarkZurichDataset',
+    'BinarySegDataset',
 ]
