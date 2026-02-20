@@ -25,7 +25,7 @@ model = dict(
         in_channels=2048,
         in_index=3,
         dilations=(6, 12, 18, 24),
-        num_classes=19,
+        num_classes=2,
         align_corners=False,
         init_cfg=dict(
             type='Normal', std=0.01, override=dict(name='aspp_modules')),
