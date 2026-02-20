@@ -93,7 +93,11 @@ def get_class_masks(labels, foreground_only=False, foreground_label=1):
         if foreground_only:
             fg_mask = (label == foreground_label)
             if torch.any(fg_mask):
+<<<<<<< codex/modify-self-training-for-binary-segmentation-pm91dd
+                class_masks.append(fg_mask.to(label.dtype).unsqueeze(0))
+=======
                 class_masks.append(fg_mask.float().unsqueeze(0))
+>>>>>>> master
                 continue
 
         classes = torch.unique(label)
