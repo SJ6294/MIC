@@ -4,6 +4,8 @@
 dataset_type = 'BinarySegDataset'
 source_root = r'B:/3_exp/code_exp/data/MAS3K/fold1/train/'
 target_root = r'B:/3_exp/code_exp/data/Deepfish/fold1/train/'
+source_valid_root = r'B:/3_exp/code_exp/data/MAS3K/fold1/valid/'
+target_valid_root = r'B:/3_exp/code_exp/data/Deepfish/fold1/valid/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 crop_size = (512, 512)
@@ -68,13 +70,13 @@ data = dict(
             pipeline=target_train_pipeline)),
     val=dict(
         type=dataset_type,
-        data_root=target_root,
+        data_root=target_valid_root,
         img_dir='high',
         ann_dir='Mask',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        data_root=target_root,
+        data_root=target_valid_root,
         img_dir='high',
         ann_dir='Mask',
         pipeline=test_pipeline))
