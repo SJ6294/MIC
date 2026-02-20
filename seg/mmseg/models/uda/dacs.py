@@ -395,7 +395,8 @@ class DACS(UDADecorator):
             # Apply mixing
             mixed_img, mixed_lbl = [None] * batch_size, [None] * batch_size
             mixed_seg_weight = pseudo_weight.clone()
-            mix_masks = get_class_masks(gt_semantic_seg)
+            mix_masks = get_class_masks(
+                gt_semantic_seg, foreground_only=self.num_classes == 2)
 
             for i in range(batch_size):
                 strong_parameters['mix'] = mix_masks[i]
@@ -444,6 +445,7 @@ class DACS(UDADecorator):
             vis_img = torch.clamp(denorm(img, means, stds), 0, 1)
             vis_trg_img = torch.clamp(denorm(target_img, means, stds), 0, 1)
             vis_mixed_img = torch.clamp(denorm(mixed_img, means, stds), 0, 1)
+            label_cmap = 'gray' if self.num_classes == 2 else 'cityscapes'
             for j in range(batch_size):
                 rows, cols = 2, 5
                 fig, axs = plt.subplots(
@@ -465,12 +467,12 @@ class DACS(UDADecorator):
                     axs[0][1],
                     gt_semantic_seg[j],
                     'Source Seg GT',
-                    cmap='cityscapes')
+                    cmap=label_cmap)
                 subplotimg(
                     axs[1][1],
                     pseudo_label[j],
                     'Target Seg (Pseudo) GT',
-                    cmap='cityscapes')
+                    cmap=label_cmap)
                 subplotimg(axs[0][2], vis_mixed_img[j], 'Mixed Image')
                 subplotimg(
                     axs[1][2], mix_masks[j][0], 'Domain Mask', cmap='gray')
@@ -478,7 +480,7 @@ class DACS(UDADecorator):
                 #            cmap="cityscapes")
                 if mixed_lbl is not None:
                     subplotimg(
-                        axs[1][3], mixed_lbl[j], 'Seg Targ', cmap='cityscapes')
+                        axs[1][3], mixed_lbl[j], 'Seg Targ', cmap=label_cmap)
                 subplotimg(
                     axs[0][3],
                     mixed_seg_weight[j],
@@ -496,7 +498,7 @@ class DACS(UDADecorator):
                         axs[1][4],
                         self.debug_gt_rescale[j],
                         'Scaled GT',
-                        cmap='cityscapes')
+                        cmap=label_cmap)
                 for ax in axs.flat:
                     ax.axis('off')
                 plt.savefig(
