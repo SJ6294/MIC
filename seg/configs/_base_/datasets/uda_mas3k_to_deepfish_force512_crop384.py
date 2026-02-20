@@ -12,7 +12,7 @@ crop_size = (384, 384)
 
 source_train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
+    dict(type='LoadAnnotations', binary_label=True, label_threshold=128, keep_ignore_label=False),
     # NOTE: keep_ratio=False intentionally distorts to fixed 512x512.
     dict(type='Resize', img_scale=(512, 512), keep_ratio=False),
     dict(type='RandomCrop', crop_size=crop_size),
@@ -24,7 +24,7 @@ source_train_pipeline = [
 
 target_train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
+    dict(type='LoadAnnotations', binary_label=True, label_threshold=128, keep_ignore_label=False),
     dict(type='Resize', img_scale=(512, 512), keep_ratio=False),
     dict(type='RandomCrop', crop_size=crop_size),
     dict(type='RandomFlip', prob=0.5),

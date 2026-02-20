@@ -12,7 +12,7 @@ crop_size = (512, 512)
 
 source_train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
+    dict(type='LoadAnnotations', binary_label=True, label_threshold=128, keep_ignore_label=False),
     # Higher base scale + moderate multiscale jitter to reduce pad frequency.
     dict(type='Resize', img_scale=(1536, 1536), ratio_range=(0.75, 1.5), keep_ratio=True),
     dict(type='RandomCrop', crop_size=crop_size),
@@ -26,7 +26,7 @@ source_train_pipeline = [
 
 target_train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
+    dict(type='LoadAnnotations', binary_label=True, label_threshold=128, keep_ignore_label=False),
     dict(type='Resize', img_scale=(1536, 1536), ratio_range=(0.75, 1.5), keep_ratio=True),
     dict(type='RandomCrop', crop_size=crop_size),
     dict(type='RandomFlip', prob=0.5),
