@@ -96,6 +96,14 @@ class LoadAnnotations(object):
         reduce_zero_label (bool): Whether reduce all label value by 1.
             Usually used for datasets where 0 is background label.
             Default: False.
+        binary_label (bool): Whether to remap labels to binary (0/1) using
+            ``label_threshold``. Default: False.
+        label_threshold (int): Threshold used when ``binary_label=True``.
+            Pixels >= threshold are mapped to 1 and others to 0. Default: 128.
+        keep_ignore_label (bool): If True and ``binary_label=True``, keep
+            pixels with value ``ignore_label`` unchanged. Default: False.
+        ignore_label (int): Label value to preserve when
+            ``keep_ignore_label=True``. Default: 255.
         file_client_args (dict): Arguments to instantiate a FileClient.
             See :class:`mmcv.fileio.FileClient` for details.
             Defaults to ``dict(backend='disk')``.
@@ -105,9 +113,17 @@ class LoadAnnotations(object):
 
     def __init__(self,
                  reduce_zero_label=False,
+                 binary_label=False,
+                 label_threshold=128,
+                 keep_ignore_label=False,
+                 ignore_label=255,
                  file_client_args=dict(backend='disk'),
                  imdecode_backend='pillow'):
         self.reduce_zero_label = reduce_zero_label
+        self.binary_label = binary_label
+        self.label_threshold = label_threshold
+        self.keep_ignore_label = keep_ignore_label
+        self.ignore_label = ignore_label
         self.file_client_args = file_client_args.copy()
         self.file_client = None
         self.imdecode_backend = imdecode_backend
@@ -144,12 +160,23 @@ class LoadAnnotations(object):
             gt_semantic_seg[gt_semantic_seg == 0] = 255
             gt_semantic_seg = gt_semantic_seg - 1
             gt_semantic_seg[gt_semantic_seg == 254] = 255
+
+        if self.binary_label:
+            if self.keep_ignore_label:
+                ignore_mask = gt_semantic_seg == self.ignore_label
+                gt_semantic_seg = (
+                    gt_semantic_seg >= self.label_threshold).astype(np.uint8)
+                gt_semantic_seg[ignore_mask] = self.ignore_label
+            else:
+                gt_semantic_seg = (
+                    gt_semantic_seg >= self.label_threshold).astype(np.uint8)
+
         results['gt_semantic_seg'] = gt_semantic_seg
         results['seg_fields'].append('gt_semantic_seg')
         return results
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += f'(reduce_zero_label={self.reduce_zero_label},'
+        repr_str += f'(reduce_zero_label={self.reduce_zero_label}, '                     f'binary_label={self.binary_label}, '                     f'label_threshold={self.label_threshold}, '                     f'keep_ignore_label={self.keep_ignore_label}, '                     f'ignore_label={self.ignore_label}, '
         repr_str += f"imdecode_backend='{self.imdecode_backend}')"
         return repr_str
