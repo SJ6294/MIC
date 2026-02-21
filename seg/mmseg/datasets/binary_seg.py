@@ -52,8 +52,14 @@ class BinarySegDataset(CustomDataset):
             img_suffix=img_suffix, seg_map_suffix=seg_map_suffix, **kwargs)
 
     def _map_binary(self, seg):
+        seg = np.asarray(seg)
+        # Robustly convert potential RGB/RGBA masks to a single channel.
+        if seg.ndim == 3:
+            seg = seg[..., 0]
+        seg = np.squeeze(seg)
+
         if not self.binary_label:
-            return seg
+            return seg.astype(np.uint8)
         if self.keep_ignore_label:
             ignore_mask = seg == self.ignore_label
             seg = (seg >= self.label_threshold).astype(np.uint8)

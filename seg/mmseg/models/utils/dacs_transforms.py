@@ -94,7 +94,6 @@ def get_class_masks(labels, foreground_only=False, foreground_label=1):
             fg_mask = (label == foreground_label)
             if torch.any(fg_mask):
                 class_masks.append(fg_mask.to(label.dtype).unsqueeze(0))
-
                 continue
 
         classes = torch.unique(label)
