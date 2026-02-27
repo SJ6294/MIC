@@ -1,4 +1,4 @@
-# MIC: Masked Image Consistency for Context-Enhanced Domain Adaptation
+# MIC: Masked Image Consistency for Context-Enhanced Domain Adaptation for binary semantic segmentation (수정중)
 
 **by
 [Lukas Hoyer](https://lhoyer.github.io/),
